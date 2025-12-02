@@ -1,37 +1,53 @@
 import unittest
-from day01.solution import part1, part2
+from day01.solution import get_hit
 
 
 class TestDay01(unittest.TestCase):
-    def setUp(self):
-        """Set up test data."""
-        self.test_data = """10
-20
-30
-Hello World
-40
-50"""
 
-    def test_part1(self):
-        """Test part 1: Count lines."""
-        result = part1(self.test_data)
-        self.assertEqual(result, 6)
 
-    def test_part2(self):
-        """Test part 2: Sum numbers."""
-        result = part2(self.test_data)
-        self.assertEqual(result, 150)
+    def test1(self):
+        self.test_data = """L68
+L30
+R48
+L5
+R60
+L55
+L1
+L99
+R14
+L82"""
 
-    def test_part1_single_line(self):
-        """Test part 1 with single line."""
-        result = part1("single")
-        self.assertEqual(result, 1)
+        result = get_hit(self.test_data)
 
-    def test_part2_no_numbers(self):
-        """Test part 2 with no numbers."""
-        result = part2("hello\nworld")
-        self.assertEqual(result, 0)
+        self.assertEqual(3, result)
 
+    def test2(self):
+        self.test_data = """L50
+L10
+L90
+L5
+R5
+R3
+R3
+L6"""
+
+        result = get_hit(self.test_data)
+
+        self.assertEqual(4, result)
+
+    def test3(self):
+            self.test_data = """R150"""
+
+            result = get_hit(self.test_data)
+
+            self.assertEqual(1, result)
+
+    def test4(self):
+        self.test_data = """L250"""
+
+        result = get_hit(self.test_data)
+
+        self.assertEqual(1, result)
 
 if __name__ == "__main__":
     unittest.main()

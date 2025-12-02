@@ -1,38 +1,48 @@
-def parse_input(filename):
+def read_input_data(filename):
     """Parse the input file and return the data."""
     with open(filename, 'r') as f:
         return f.read().strip()
 
 
-def part1(data):
-    """Solve part 1: Count the number of lines."""
-    lines = data.split('\n')
-    return len(lines)
+def get_lines(data):
+    """Get lines"""
+    return data.split('\n')
 
+def get_hit(data):
+    """Gets the hit"""
+    lines = get_lines(data)
 
-def part2(data):
-    """Solve part 2: Sum all numbers in the input."""
-    total = 0
-    for line in data.split('\n'):
-        try:
-            total += int(line)
-        except ValueError:
-            pass
-    return total
+    start = 50
+    hit = 0
 
+    for line in lines:
+        digit = line[0]
+        number = int(line[1:])
+
+        if digit == "L":
+            start = start - number
+            if start < 0:
+                start = (100 + start) % 100
+        elif digit == "R":
+            start = (start + number)
+            if start > 99:
+                start = (start - 100) % 100
+        else:
+            raise Exception("Illegal input")
+
+        print(start)
+
+        if start == 0:
+            hit = hit + 1
+
+    return hit
 
 def main():
-    """Main function to run both parts."""
-    data = parse_input("input.txt")
+    """The solution"""
+    data = read_input_data("input.txt")
+    hit = get_hit(data)
 
-    result1 = part1(data)
-    result2 = part2(data)
-
-    print("Part 1:", result1)
-    print("Part 2:", result2)
-
-    return result1, result2
-
+    print(f"hits {hit}")
 
 if __name__ == "__main__":
     main()
