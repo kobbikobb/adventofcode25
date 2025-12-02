@@ -1,3 +1,6 @@
+import math
+
+
 def read_input_data(filename):
     """Parse the input file and return the data."""
     with open(filename, 'r') as f:
@@ -20,20 +23,28 @@ def get_hit(data):
         number = int(line[1:])
 
         if digit == "L":
+            org = start
             start = start - number
             if start < 0:
-                start = (100 + start) % 100
+                hit = hit + math.floor(abs(start) / 100)
+                if org != 0:
+                    hit = hit + 1
+
+                start = (100 + start)
+            elif start == 0:
+                hit = hit + 1
         elif digit == "R":
             start = (start + number)
             if start > 99:
-                start = (start - 100) % 100
+                hit = hit + math.floor(abs(start) / 100)
+
+                start = (start - 100)
         else:
             raise Exception("Illegal input")
 
-        print(start)
+        start = start % 100
 
-        if start == 0:
-            hit = hit + 1
+        print(start)
 
     return hit
 
@@ -45,5 +56,5 @@ def main():
     print(f"hits {hit}")
 
 if __name__ == "__main__":
-    # 1018 Correct
+    # 5815 Correct
     main()

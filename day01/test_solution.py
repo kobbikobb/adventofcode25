@@ -36,11 +36,15 @@ L6"""
         self.assertEqual(4, result)
 
     def test3(self):
-            self.test_data = """R150"""
+            self.test_data = """R50
+R1
+R2
+R1
+L4"""
 
             result = get_hit(self.test_data)
 
-            self.assertEqual(1, result)
+            self.assertEqual(2, result)
 
     def test4(self):
         self.test_data = """L250"""
