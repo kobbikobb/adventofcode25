@@ -10,18 +10,16 @@ def get_ranges(data):
 
 
 def is_pal(s: str) -> bool:
-    if len(s) % 2 != 0:
-        return False
+    l = len(s)
 
-    mid = len(s) // 2
-    left = s[:mid]
-    right = s[mid:]
+    for i in range(1, l):
+        part = s[0:i]
+        all = part * (l // i)
 
-    for i in range(mid):
-        if left[i] != right[i]:
-            return False
+        if all == s:
+            return True
 
-    return True
+    return False
 
 
 def do_it(data):
@@ -52,5 +50,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # 1018 Correct
+    # 85513235135 Correct
     main()

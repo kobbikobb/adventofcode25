@@ -1,5 +1,5 @@
 import unittest
-from day02.solution import do_it
+from day02A.solution import do_it
 
 
 class TestDay02A(unittest.TestCase):
