@@ -1,8 +1,10 @@
 import unittest
-from day01A.solution import get_hit
+
+from day01.solution import get_hits_part_1
 
 
-class TestDay01(unittest.TestCase):
+class TestDay01Part1(unittest.TestCase):
+
     def test1(self):
         test_data = """L68
 L30
@@ -15,7 +17,7 @@ L99
 R14
 L82"""
 
-        result = get_hit(test_data)
+        result = get_hits_part_1(test_data)
 
         self.assertEqual(3, result)
 
@@ -29,7 +31,7 @@ R3
 R3
 L6"""
 
-        result = get_hit(test_data)
+        result = get_hits_part_1(test_data)
 
         self.assertEqual(4, result)
 
@@ -40,14 +42,14 @@ R2
 R1
 L4"""
 
-        result = get_hit(test_data)
+        result = get_hits_part_1(test_data)
 
         self.assertEqual(2, result)
 
     def test4(self):
         test_data = """L250"""
 
-        result = get_hit(test_data)
+        result = get_hits_part_1(test_data)
 
         self.assertEqual(1, result)
 
