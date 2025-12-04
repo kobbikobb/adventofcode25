@@ -1,4 +1,4 @@
-from .._utils.text_utils import get_lines, read_input_data
+from _utils.text_utils import get_lines, read_input_data
 
 
 def get_hits_part_1(data: str):
@@ -49,7 +49,7 @@ def get_hits_part_2(data: str):
             if start > 99:
                 start = (start - 100) % 100
         else:
-            raise InvalidStateError("Illegal input")
+            raise Exception("Illegal input")
 
         if start == 0:
             hit = hit + 1
@@ -60,10 +60,10 @@ def get_hits_part_2(data: str):
 def main():
     """Run day"""
     data = read_input_data("input.txt")
+
     hits_1 = get_hits_part_1(data)
     print(f"hits 1 = {hits_1}")
 
-    data = read_input_data("input.txt")
     hits_2 = get_hits_part_2(data)
     print(f"hits 2 = {hits_2}")
 

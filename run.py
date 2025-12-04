@@ -15,9 +15,14 @@ def run_day(day):
     print(f"Running {day_str}...")
     print("-" * 40)
 
+    # Set PYTHONPATH to project root so _utils can be imported
+    env = os.environ.copy()
+    env['PYTHONPATH'] = os.path.dirname(os.path.abspath(__file__))
+
     result = subprocess.run(
         [sys.executable, "solution.py"],
-        cwd=day_str
+        cwd=day_str,
+        env=env
     )
 
     return result.returncode
