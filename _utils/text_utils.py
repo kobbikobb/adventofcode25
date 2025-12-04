@@ -7,3 +7,8 @@ def read_input_data(filename: str):
 def get_lines(data: str):
     """Get lines"""
     return data.split("\n")
+
+
+def get_comma_separated(data: str):
+    """Get comma separated"""
+    return data.split(",")

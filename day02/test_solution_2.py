@@ -1,12 +1,13 @@
 import unittest
-from day02B.solution import do_it
+
+from day02.part2 import get_result_part_2
 
 
-class TestDay02A(unittest.TestCase):
+class TestDay02Part2(unittest.TestCase):
     def test1(self):
         test_data = """11-22"""
 
-        result = do_it(test_data)
+        result = get_result_part_2(test_data)
 
         self.assertEqual(33, result)
 
@@ -15,6 +16,6 @@ class TestDay02A(unittest.TestCase):
 1698522-1698528,446443-446449,38593856-38593862,565653-565659,
 824824821-824824827,2121212118-2121212124"""
 
-        result = do_it(test_data)
+        result = get_result_part_2(test_data)
 
         self.assertEqual(4174379265, result)

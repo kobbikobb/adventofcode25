@@ -1,6 +1,6 @@
 import unittest
 
-from day01.solution import get_hits_part_2
+from day01.part2 import get_hits_part_2
 
 
 class TestDay01Part2(unittest.TestCase):
