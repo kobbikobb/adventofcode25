@@ -1,6 +1,6 @@
 from _utils.text_utils import read_input_data
-from day02.part1 import get_result_part_1
-from day02.part2 import get_result_part_2
+from day03.part1 import get_result_part_1
+from day03.part2 import get_result_part_2
 
 
 def main():
@@ -14,6 +14,4 @@ def main():
 
 
 if __name__ == "__main__":
-    # 64215794229 Correct
-    # 85513235135 Correct
     main()
