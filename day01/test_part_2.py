@@ -4,8 +4,62 @@ from day01.part2 import get_hits_part_2
 
 
 class TestDay01Part2(unittest.TestCase):
-
     def test1(self):
+        test_data = """L51"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(1, result)
+
+    def test2(self):
+        test_data = """L51
+L2
+R3"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(2, result)
+
+    def test3(self):
+        test_data = """L51
+R1
+R1
+L1
+R1"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(3, result)
+
+    def test4(self):
+        test_data = """R300"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(3, result)
+
+    def test5(self):
+        test_data = """L300"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(3, result)
+
+    def test6(self):
+        test_data = """R1000"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(10, result)
+
+    def test7(self):
+        test_data = """L1000"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(10, result)
+
+    def test8(self):
         test_data = """L68
 L30
 R48
@@ -19,39 +73,53 @@ L82"""
 
         result = get_hits_part_2(test_data)
 
-        self.assertEqual(3, result)
+        self.assertEqual(6, result)
 
-    def test2(self):
-        test_data = """L50
-L10
-L90
-L5
-R5
-R3
-R3
-L6"""
-
-        result = get_hits_part_2(test_data)
-
-        self.assertEqual(4, result)
-
-    def test3(self):
-        test_data = """R50
-R1
-R2
-R1
-L4"""
+    def test9(self):
+        test_data = """L150"""
 
         result = get_hits_part_2(test_data)
 
         self.assertEqual(2, result)
 
-    def test4(self):
-        test_data = """L250"""
+    def test10(self):
+        test_data = """R150"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(2, result)
+
+    def test11(self):
+        test_data = """R40
+R105"""
 
         result = get_hits_part_2(test_data)
 
         self.assertEqual(1, result)
+
+    def test12(self):
+        test_data = """L40
+L105"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(1, result)
+
+    def test13(self):
+        test_data = """L50
+R300"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(4, result)
+
+    def test14(self):
+        test_data = """R50
+R300"""
+
+        result = get_hits_part_2(test_data)
+
+        self.assertEqual(4, result)
 
 
 if __name__ == "__main__":
