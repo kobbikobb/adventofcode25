@@ -1,4 +1,4 @@
-from _utils.text_utils import get_comma_separated
+from _utils.text_utils import get_lines
 
 
 def get_jolt(line: str):
@@ -28,7 +28,7 @@ def get_jolt(line: str):
 
 def get_result_part_1(data: str):
     """Gets the result"""
-    lines = get_comma_separated(data)
+    lines = get_lines(data)
 
     result = 0
 
