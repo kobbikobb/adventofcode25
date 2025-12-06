@@ -1,7 +1,6 @@
 from _utils.text_utils import read_input_data
-from day03.part1 import get_result_part_1
-from day03.part2 import get_result_part_2
-
+from day04.part1 import get_result_part_1
+from day04.part2 import get_result_part_2
 
 def main():
     """The solution"""
@@ -9,11 +8,10 @@ def main():
     result1 = get_result_part_1(data)
     result2 = get_result_part_2(data)
 
-    print(f"result 1: {result1}")
+    print(f"result 1 :{result1}")
     print(f"result 2: {result2}")
 
-
 if __name__ == "__main__":
-    # 17158  Correct
-    # 170449335646486 Correct
+    # 1604 Correct
+    # 9397 Correct
     main()

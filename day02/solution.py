@@ -9,8 +9,8 @@ def main():
     result1 = get_result_part_1(data)
     result2 = get_result_part_2(data)
 
-    print(f"result 1 {result1}")
-    print(f"result 2 {result2}")
+    print(f"result 1: {result1}")
+    print(f"result 2: {result2}")
 
 
 if __name__ == "__main__":

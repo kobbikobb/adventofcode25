@@ -8,10 +8,10 @@ def main():
     data = read_input_data("input.txt")
 
     hits_1 = get_hits_part_1(data)
-    print(f"hits 1 = {hits_1}")
+    print(f"hits 1: {hits_1}")
 
     hits_2 = get_hits_part_2(data)
-    print(f"hits 2 = {hits_2}")
+    print(f"hits 2: {hits_2}")
 
 
 if __name__ == "__main__":
