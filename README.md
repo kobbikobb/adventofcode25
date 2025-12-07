@@ -2,6 +2,12 @@
 
 Solutions for Advent of Code 2025 in Python 3.
 
+## Goals
+
+- Keep it simple.
+- Don't worrie about best practices, just find a solution that works.
+- Write unit tests to guide the solution.
+
 ## Setup
 
 Create a virtual environment and install dependencies:
@@ -15,25 +21,20 @@ pip install -r requirements.txt
 ## Usage
 
 Run a solution:
+
 ```bash
 python3 run.py <day>
 ```
 
 Run tests for a specific day:
+
 ```bash
 pytest dayXX -v
 ```
 
 Run all tests:
+
 ```bash
 pytest
-```
 
-## New Day
-
-Copy templates and add your input:
-```bash
-cp template.py dayXX/solution.py
-cp _test_template.py dayXX/test_solution.py
-touch dayXX/input.txt
 ```
