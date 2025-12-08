@@ -1,26 +1,25 @@
-from os import wait
-from functools import lru_cache
 from _utils.text_utils import get_lines
 
-def sum_routes(lines: list[str], row: int, col: int) -> int:
-    @lru_cache(None)
-    def walk(r: int, c: int) -> int:
-        if r + 2 > len(lines):
-            return 1
+def sum_routes(lines: list[str], row: int, col: int, memo: dict) -> int:
+    key = (row, col)
+    if key in memo:
+        return memo[key]
 
-        cell = lines[r][c]
+    if row + 2 > len(lines):
+        memo[key] = 1
+        return 1
 
-        if cell == "^":
-            total = 0
-            if c > 0:
-                total += walk(r + 2, c - 1)
-            if c < len(lines[r]) - 1:
-                total += walk(r + 2, c + 1)
-            return total
-        else:
-            return walk(r + 2, c)
+    if lines[row][col] == "^":
+        total = 0
+        if col > 0:
+            total += sum_routes(lines, row + 2, col - 1, memo)
+        if col < len(lines[row]) - 1:
+            total += sum_routes(lines, row + 2, col + 1, memo)
+    else:
+        total = sum_routes(lines, row + 2, col, memo)
 
-    return walk(row, col)
+    memo[key] = total
+    return total
 
 def get_result_part_2(data: str):
     """Gets the result"""
@@ -28,6 +27,6 @@ def get_result_part_2(data: str):
     lines = get_lines(data)
     first = lines[0].index("S")
 
-    total: int = sum_routes(lines, 2, first)
+    total: int = sum_routes(lines, 2, first, {})
 
     return total
