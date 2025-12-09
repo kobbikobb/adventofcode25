@@ -1,4 +1,5 @@
 import math
+from itertools import combinations
 
 from _utils.text_utils import get_lines
 
@@ -15,6 +16,15 @@ class Point:
         self.y = y
         self.z = z
 
+    def __eq__(self, other: object) -> bool:
+        """Checks equality between two points."""
+        if not isinstance(other, Point):
+            return False
+        return (self.x, self.y, self.z) == (other.x, other.y, other.z)
+
+    def __hash__(self):
+        return hash((self.x, self.y, self.z))
+
     @classmethod
     def from_line(cls, line: str) -> "Point":
         """Creates a Point from a line of text."""
@@ -22,11 +32,7 @@ class Point:
         if len(points) != 3:
             raise ValueError(f"Invalid line for Point: {line}")
 
-        cls.x = int(points[0])
-        cls.y = int(points[1])
-        cls.z = int(points[2])
-
-        return cls(cls.x, cls.y, cls.z)
+        return cls(int(points[0]), int(points[1]), int(points[2]))
 
     def __str__(self):
         return f"{self.x},{self.y},{self.z}"
@@ -40,63 +46,68 @@ def distance(point1: Point, point2: Point) -> float:
     return math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2 + (z2 - z1) ** 2)
 
 
-# arse points.
-#
-# uild list of all pairwise distances.
-#
-# ort by distance.
-#
-# se Union–Find:
-#
-# tart with 20 components of size 1.
-#
-# rocess edges until you have performed 10 merges.
-#
-# ount component sizes.
-#
-# ultiply the largest 3.
+def get_distances(points: list[Point]) -> list[tuple[Point, Point, float]]:
+    """Gets all distances between points."""
+    distances = [(p1, p2, distance(p1, p2)) for p1, p2 in combinations(points, 2)]
+    return distances
 
 
-def get_result_part_1(data: str, max_connected: int = 10) -> int:
+def get_result_part_1(data: str, max_connected: int) -> int:
     """Gets the result"""
 
     lines = get_lines(data)
     points: list[Point] = [Point.from_line(line) for line in lines]
 
-    distances: list[tuple[Point, Point, float]] = []
-
-    for point in points:
-        for other in points:
-            if point != other:
-                dist = distance(point, other)
-                distances.append((point, other, dist))
-
+    distances = get_distances(points)
     distances.sort(key=lambda x: x[2])
-    circuts: list[list[Point]] = []
+    circuits: list[list[Point]] = []
 
     connected = 0
 
     for dist in distances:
+        connected += 1
+        d1, d2, l = dist
 
-        for circut in circuts:
-
-            if dist[0] in circut:
-                circut.append(dist[1])
-                connected += 1
+        # Find the circuits containing d1 and d2
+        c1 = c2 = None
+        for circuit in circuits:
+            if d1 in circuit:
+                c1 = circuit
+            if d2 in circuit:
+                c2 = circuit
+            if c1 and c2:
                 break
-            if dist[1] in circut:
-                circut.append(dist[0])
-                connected += 1
-                break
 
-        circuts.append([dist[0], dist[1]])
+        # Already in the same circuit (use identity, not equality)
+        if c1 is not None and c2 is not None and c1 is c2:
+            if connected >= max_connected:
+                break
+            continue
+
+        # If both are in different circuits, merge c2 into c1
+        if c1 and c2:
+            for point in c2:
+                if point not in c1:
+                    c1.append(point)
+            circuits.remove(c2)
+
+        # Only d1 is in a circuit → add d2
+        elif c1:
+            if d2 not in c1:
+                c1.append(d2)
+
+        # Only d2 is in a circuit → add d1
+        elif c2:
+            if d1 not in c2:
+                c2.append(d1)
+
+        # Neither in a circuit → create new
+        else:
+            circuits.append([d1, d2])
 
         if connected >= max_connected:
             break
 
-    result = 0
+    circuits.sort(key=len, reverse=True)
 
-    for circut in circuts:
-        result += len(circut)
-
-    return result
+    return len(circuits[0]) * len(circuits[1]) * len(circuits[2])

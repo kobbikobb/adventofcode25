@@ -27,6 +27,6 @@ class TestDay08Part1(unittest.TestCase):
 984,92,344
 425,690,689"""
 
-        result = get_result_part_1(test_data)
+        result = get_result_part_1(test_data, 10)
 
         self.assertEqual(40, result)
