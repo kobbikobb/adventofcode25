@@ -2,7 +2,7 @@ from _utils.text_utils import get_lines
 from day08.point import Point, get_distances
 
 
-def get_result_part_1(data: str, max_connected: int) -> int:
+def get_result_part_2(data: str) -> int:
     """Gets the result"""
 
     lines = get_lines(data)
@@ -11,11 +11,9 @@ def get_result_part_1(data: str, max_connected: int) -> int:
     distances = get_distances(points)
     distances.sort(key=lambda x: x[2])
     circuits: list[list[Point]] = []
-
-    connected = 0
+    last_connected: tuple[Point, Point]
 
     for dist in distances:
-        connected += 1
         d1, d2, l = dist
 
         # Find the circuits containing d1 and d2
@@ -30,12 +28,13 @@ def get_result_part_1(data: str, max_connected: int) -> int:
 
         # Already in the same circuit (use identity, not equality)
         if c1 is not None and c2 is not None and c1 is c2:
-            if connected >= max_connected:
-                break
             continue
 
         # If both are in different circuits, merge c2 into c1
         if c1 and c2:
+
+            last_connected = (d1, d2)
+
             for point in c2:
                 if point not in c1:
                     c1.append(point)
@@ -55,9 +54,8 @@ def get_result_part_1(data: str, max_connected: int) -> int:
         else:
             circuits.append([d1, d2])
 
-        if connected >= max_connected:
-            break
+    print(len(circuits))
+    print(last_connected[0])
+    print(last_connected[1])
 
-    circuits.sort(key=len, reverse=True)
-
-    return len(circuits[0]) * len(circuits[1]) * len(circuits[2])
+    return last_connected[0].x * last_connected[1].x
