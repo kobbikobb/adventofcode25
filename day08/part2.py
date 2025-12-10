@@ -44,18 +44,17 @@ def get_result_part_2(data: str) -> int:
         elif c1:
             if d2 not in c1:
                 c1.append(d2)
+                last_connected = (d1, d2)
 
         # Only d2 is in a circuit → add d1
         elif c2:
             if d1 not in c2:
                 c2.append(d1)
+                last_connected = (d1, d2)
 
         # Neither in a circuit → create new
         else:
             circuits.append([d1, d2])
-
-    print(len(circuits))
-    print(last_connected[0])
-    print(last_connected[1])
+            last_connected = (d1, d2)
 
     return last_connected[0].x * last_connected[1].x
