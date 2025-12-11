@@ -3,7 +3,7 @@ import unittest
 from day09.part1 import get_result_part_1, size_between_corners
 
 
-class TestDay08Part1(unittest.TestCase):
+class TestDay09Part1(unittest.TestCase):
 
     def test_calculate_size_between_corners_1(self):
         corner_a = (2, 5)
