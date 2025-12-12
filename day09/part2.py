@@ -114,6 +114,8 @@ def get_result_part_2(data: str) -> int:
 
     covered_ranges = compute_green_ranges(red_corners)
 
-    print(f"{covered_ranges} ranges found 🚀, now calculating biggest rectangle...")
+    print(
+        f"{len(covered_ranges)} ranges found 🚀, now calculating biggest rectangle..."
+    )
 
     return find_biggest_rectangle(red_corners, covered_ranges)
