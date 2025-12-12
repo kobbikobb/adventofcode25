@@ -59,19 +59,18 @@ def is_full(
     covered_ranges: dict[int, tuple[int, int]],
 ) -> bool:
     """check if all cells in rectangle (except corners) are covered using ranges"""
+
     rect_x_min = min(corner_a[0], corner_b[0])
     rect_x_max = max(corner_a[0], corner_b[0])
     rect_y_min = min(corner_a[1], corner_b[1])
     rect_y_max = max(corner_a[1], corner_b[1])
 
     for y in range(rect_y_min, rect_y_max):
-        # check if this row exists in covered ranges
         if y not in covered_ranges:
             return False
 
         covered_x_min, covered_x_max = covered_ranges[y]
 
-        # check if the covered range fully contains the rectangle's x-range for this row
         if covered_x_min > rect_x_min or covered_x_max < rect_x_max:
             return False
 
@@ -82,20 +81,26 @@ def find_biggest_rectangle(
     corners: list[tuple[int, int]], covered_ranges: dict[int, tuple[int, int]]
 ) -> int:
     """Finds the biggest rectangle that is fully covered"""
-    result = 0
+
+    rectangle_sizes: dict[int, tuple[tuple[int, int], tuple[int, int]]] = {}
 
     for corner_a in corners:
         for corner_b in corners:
             if corner_a == corner_b:
                 continue
 
-            if not is_full(corner_a, corner_b, covered_ranges):
-                continue
-
             size = size_between_corners(corner_a, corner_b)
-            result = max(result, size)
+            rectangle_sizes[size] = (corner_a, corner_b)
 
-    return result
+    rectangle_sizes_sorted = sorted(rectangle_sizes.keys(), reverse=True)
+
+    for size in rectangle_sizes_sorted:
+        corner_a, corner_b = rectangle_sizes[size]
+
+        if is_full(corner_a, corner_b, covered_ranges):
+            return size
+
+    return 0
 
 
 def get_result_part_2(data: str) -> int:
@@ -109,5 +114,6 @@ def get_result_part_2(data: str) -> int:
 
     covered_ranges = compute_green_ranges(red_corners)
 
-    print("covered_ranges")
+    print(f"{covered_ranges} ranges found 🚀, now calculating biggest rectangle...")
+
     return find_biggest_rectangle(red_corners, covered_ranges)
