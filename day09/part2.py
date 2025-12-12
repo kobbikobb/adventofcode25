@@ -15,10 +15,13 @@ def compute_green_ranges(
 ) -> dict[int, tuple[int, int]]:
     """Computes covered x-ranges for each y-coordinate (more memory efficient than storing every cell)"""
 
-    covered: set[tuple[int, int]] = set()
+    # Collect x-coordinates for each y-row directly
+    y_to_xs: dict[int, set[int]] = {}
 
     for x, y in red_corners:
-        covered.add((x, y))
+        if y not in y_to_xs:
+            y_to_xs[y] = set()
+        y_to_xs[y].add(x)
 
     # Add green segments between corners
     for i, (x, y) in enumerate(red_corners):
@@ -26,25 +29,26 @@ def compute_green_ranges(
 
         if x == xn and abs(y - yn) > 1:
             for yy in range(min(y, yn) + 1, max(y, yn)):
-                covered.add((x, yy))
+                if yy not in y_to_xs:
+                    y_to_xs[yy] = set()
+                y_to_xs[yy].add(x)
         elif y == yn and abs(x - xn) > 1:
+            if y not in y_to_xs:
+                y_to_xs[y] = set()
             for xx in range(min(x, xn) + 1, max(x, xn)):
-                covered.add((xx, y))
+                y_to_xs[y].add(xx)
 
-    # Convert to ranges
+    # Convert to ranges with interior fill
     ranges: dict[int, tuple[int, int]] = {}
-    min_y = min(y for _, y in covered)
-    max_y = max(y for _, y in covered)
+    if y_to_xs:
+        min_y = min(y_to_xs.keys())
+        max_y = max(y_to_xs.keys())
 
-    for y in range(min_y, max_y + 1):
-        xs_at_y = [x for x, yy in covered if yy == y]
-        if len(xs_at_y) >= 2:
-            # interior fill: everything between leftmost and rightmost is covered
-            ranges[y] = (min(xs_at_y), max(xs_at_y))
-        elif len(xs_at_y) == 1:
-            # single point on this row
-            new_x = xs_at_y[0]
-            ranges[y] = (new_x, new_x)
+        for y in range(min_y, max_y + 1):
+            if y in y_to_xs:
+                xs = y_to_xs[y]
+                # Interior fill: everything between leftmost and rightmost is covered
+                ranges[y] = (min(xs), max(xs))
 
     return ranges
 
