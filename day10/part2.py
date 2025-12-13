@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from itertools import combinations
+from itertools import combinations, combinations_with_replacement
 
 from _utils.text_utils import get_lines
 
@@ -10,7 +10,7 @@ class Machine:
 
     lights: list[bool]
     buttons: list[list[int]]
-    joltages: set[int]
+    joltages: list[int]
 
 
 def get_between(source: str, start: str, end: str) -> str:
@@ -34,7 +34,7 @@ def get_machines(lines: list[str]) -> list[Machine]:
 
         lights = [c == "#" for c in lights_str]
         buttons = [[int(num) for num in btn_str.split(",")] for btn_str in buttons_strs]
-        joltages = {int(joltage_str) for joltage_str in joltages_str.split(",")}
+        joltages = [int(joltage_str) for joltage_str in joltages_str.split(",")]
 
         machines.append(Machine(lights, buttons, joltages))
 
@@ -44,24 +44,25 @@ def get_machines(lines: list[str]) -> list[Machine]:
 def calculate_machine(machine: Machine) -> int:
     """Calculates the result for a single machine"""
 
-    for i in range(1, len(machine.buttons) + 1):
+    for i in range(1, sum(machine.joltages) + 1):
 
-        for combo in combinations(machine.buttons, i):
+        combos = list(combinations_with_replacement(machine.buttons, i))
 
-            to_match: list[bool] = [False] * len(machine.lights)
+        for combo in combos:
+            to_match: list[int] = [0] * len(machine.joltages)
 
             for buttons in combo:
                 for idx in buttons:
-                    to_match[idx] = not bool(to_match[idx])
+                    to_match[idx] = to_match[idx] + 1
 
-            if to_match == machine.lights:
+            if to_match == machine.joltages:
                 print(f"Found match with {i} buttons")
                 return i
 
     return 0
 
 
-def get_result_part_1(data: str) -> int:
+def get_result_part_2(data: str) -> int:
     """Gets the result"""
 
     lines: list[str] = get_lines(data)
