@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from itertools import combinations, combinations_with_replacement
+
+import pulp
 
 from _utils.text_utils import get_lines
 
@@ -44,22 +45,30 @@ def get_machines(lines: list[str]) -> list[Machine]:
 def calculate_machine(machine: Machine) -> int:
     """Calculates the result for a single machine"""
 
-    for i in range(1, sum(machine.joltages) + 1):
+    num_buttons = len(machine.buttons)
 
-        combos = list(combinations_with_replacement(machine.buttons, i))
+    problem = pulp.LpProblem("MinimizeButtonPresses", pulp.LpMinimize)
 
-        for combo in combos:
-            to_match: list[int] = [0] * len(machine.joltages)
+    x_variable = [
+        pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer") for i in range(num_buttons)
+    ]
 
-            for buttons in combo:
-                for idx in buttons:
-                    to_match[idx] = to_match[idx] + 1
+    problem += pulp.lpSum(x_variable), "TotalPresses"
 
-            if to_match == machine.joltages:
-                print(f"Found match with {i} buttons")
-                return i
+    for i, target in enumerate(machine.joltages):
+        problem += (
+            pulp.lpSum(
+                x_variable[j] for j, btn in enumerate(machine.buttons) if i in btn
+            )
+            == target,
+            f"Counter{i}",
+        )
 
-    return 0
+    problem.solve(pulp.PULP_CBC_CMD(msg=0))  # silent solver
+
+    total_presses = sum(int(pulp.value(var)) for var in x_variable)
+
+    return total_presses
 
 
 def get_result_part_2(data: str) -> int:

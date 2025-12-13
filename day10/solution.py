@@ -2,6 +2,7 @@ from _utils.text_utils import read_input_data
 from day10.part1 import get_result_part_1
 from day10.part2 import get_result_part_2
 
+
 def main():
     """The solution"""
     data = read_input_data("input.txt")
@@ -14,5 +15,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # 477 Correct
+    # 1: 477 Correct
+    # 2: 17970 Correct
     main()
