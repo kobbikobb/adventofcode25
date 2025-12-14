@@ -36,10 +36,11 @@ def get_total_routes_to_out(device_name: str, devices: dict[str, Device]) -> int
     )
 
 
-def get_result_part_1(data: str) -> int:
+def get_result_part_2(data: str) -> int:
     """Gets the result"""
 
     lines: list[str] = get_lines(data)
     devices: dict[str, Device] = get_devices(lines)
 
-    return get_total_routes_to_out("you", devices)
+    # Multiple devices can start with svr
+    return get_total_routes_to_out("svr", devices)
