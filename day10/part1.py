@@ -55,7 +55,6 @@ def calculate_machine(machine: Machine) -> int:
                     to_match[idx] = not bool(to_match[idx])
 
             if to_match == machine.lights:
-                print(f"Found match with {i} buttons")
                 return i
 
     return 0

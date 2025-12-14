@@ -45,30 +45,27 @@ def get_machines(lines: list[str]) -> list[Machine]:
 def calculate_machine(machine: Machine) -> int:
     """Calculates the result for a single machine"""
 
-    num_buttons = len(machine.buttons)
-
     problem = pulp.LpProblem("MinimizeButtonPresses", pulp.LpMinimize)
 
-    x_variable = [
-        pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer") for i in range(num_buttons)
+    button_presses = [
+        pulp.LpVariable(f"x{i}", lowBound=0, cat="Integer")
+        for i in range(len(machine.buttons))
     ]
 
-    problem += pulp.lpSum(x_variable), "TotalPresses"
+    # Objective: Minimize the total number of button presses
+    problem += pulp.lpSum(button_presses)
 
+    # Constraints: Each counter must reach its target joltage
     for i, target in enumerate(machine.joltages):
-        problem += (
-            pulp.lpSum(
-                x_variable[j] for j, btn in enumerate(machine.buttons) if i in btn
-            )
-            == target,
-            f"Counter{i}",
+        presses = (
+            button_presses[j] for j, btn in enumerate(machine.buttons) if i in btn
         )
+        problem += pulp.lpSum(presses) == target
 
-    problem.solve(pulp.PULP_CBC_CMD(msg=0))  # silent solver
+    # Solve it silently
+    problem.solve(pulp.PULP_CBC_CMD(msg=0))
 
-    total_presses = sum(int(pulp.value(var)) for var in x_variable)
-
-    return total_presses
+    return sum(int(pulp.value(x_var)) for x_var in button_presses)
 
 
 def get_result_part_2(data: str) -> int:
