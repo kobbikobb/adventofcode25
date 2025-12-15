@@ -3,7 +3,7 @@ import unittest
 from day11.part2 import get_result_part_2
 
 
-class TestDay11Part1(unittest.TestCase):
+class TestDay11Part2(unittest.TestCase):
 
     def test_part_1(self):
         test_data = """svr: aaa bbb

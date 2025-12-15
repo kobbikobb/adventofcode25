@@ -12,7 +12,7 @@ class Device:
 
 
 def get_devices(lines: list[str]) -> dict[str, Device]:
-    """Gets the devices from the data"""
+    """Gets the devices from lines"""
     devices: dict[str, Device] = {}
 
     for line in lines:
