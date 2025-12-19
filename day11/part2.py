@@ -31,19 +31,32 @@ def get_devices(lines: list[str]) -> dict[str, Device]:
     return devices
 
 
-def get_device_item(name: str, devices: dict[str, Device]) -> DeviceItem:
+def get_device_item(parent_name: str, devices: dict[str, Device]) -> DeviceItem:
     """Gets the device item"""
 
-    if not name in devices:
-        return DeviceItem(name=name, children=[])
+    cache: dict[str, DeviceItem] = {}
+    stack: list[str] = [parent_name]
 
-    return DeviceItem(
-        name=name,
-        children=[
-            get_device_item(child_name, devices)
-            for child_name in devices[name].children
-        ],
-    )
+    # Poplulate items without children
+    while stack:
+        current_name = stack.pop()
+        if current_name in cache:
+            continue
+
+        cache[current_name] = DeviceItem(name=current_name, children=[])
+        stack.extend(devices.get(current_name, Device("", [])).children)
+
+    # Popluate children
+    for name, item in cache.items():
+        device: Device | None = devices.get(name)
+        if device:
+            item.children = [
+                cache[cache_name]
+                for cache_name in device.children
+                if cache_name in cache
+            ]
+
+    return cache[parent_name]
 
 
 def get_result_part_2(data: str) -> int:
@@ -52,6 +65,17 @@ def get_result_part_2(data: str) -> int:
     lines: list[str] = get_lines(data)
     devices: dict[str, Device] = get_devices(lines)
 
-    device_item = get_device_item("svr", devices)
+    # dac = get_device_item("dac", devices)
+    # fft = get_device_item("fft", devices)
 
-    return len(device_item.children)
+    svr = get_device_item("svr", devices)
+    # How many of those paths visit both 'dac' and 'fft'?
+
+    # 1. Find all paths from 'dac' to 'out'.
+    # 2. Find all paths from 'fft' to 'out'.
+    # 3. Find all paths from 'dac' to 'svr'.
+    # 4. Find all paths from 'fft' to 'svr'.
+    # 5. Combine the paths.
+    # 6. Count unique paths.
+
+    return len(svr.children)  # Placeholder return value
