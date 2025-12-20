@@ -7,8 +7,6 @@ from _utils.text_utils import get_lines
 class Shape:
     """A shape"""
 
-    grid: list[list[bool]]
-
     def __init__(self, size_x, size_y):
         self.grid: list[list[bool]] = [
             [False for _ in range(size_x)] for _ in range(size_y)
@@ -22,27 +20,17 @@ class Shape:
         """Gets the number of columns"""
         return len(self.grid[0]) if self.rows() > 0 else 0
 
-    def get_rotated_shape(self) -> "Shape":
-        """Gets the rotated shape"""
+    def get_number_of_filled_cells(self) -> int:
+        """Gets the number of filled cells"""
 
-        rotated_shape: Shape = Shape(size_x=self.rows(), size_y=self.cols())
+        count: int = 0
 
-        for row_index, row in enumerate(self.grid):
-            for col_index, cell in enumerate(row):
-                rotated_shape.grid[col_index][self.rows() - 1 - row_index] = cell
+        for row in self.grid:
+            for cell in row:
+                if cell:
+                    count += 1
 
-        return rotated_shape
-
-    def get_flipped_shape(self) -> "Shape":
-        """Gets the flipped shape"""
-
-        flipped_shape: Shape = Shape(size_x=self.rows(), size_y=self.cols())
-
-        for row_index, row in enumerate(self.grid):
-            for col_index, cell in enumerate(row):
-                flipped_shape.grid[row_index][self.cols() - 1 - col_index] = cell
-
-        return flipped_shape
+        return count
 
 
 @dataclass
@@ -57,44 +45,24 @@ class Region:
         """Checks if the region is successful"""
 
         total_number_of_cells: int = self.size_x * self.size_y
-        # grid: ShapeGrid = ShapeGrid(self.size_x, self.size_y)
-
         target_number_of_cells: int = 0
 
         for shape_index, target_quantity in enumerate(self.shape_index_quantaties):
 
             shape: Shape = shapes[shape_index]
 
-            target_number_of_cells += shape.rows() * shape.cols() * target_quantity
+            target_number_of_cells += (
+                shape.get_number_of_filled_cells() * target_quantity
+            )
 
-            # for _ in range(target_quantity):
-            #
-            #     if grid.can_place_shape(shape):
-            #         grid.place_shape(shape)
-            #         grid.index_x += shape.cols()
-            #         grid.index_y += shape.rows()
-            #         continue
-            #
-            #     rotated: Shape = shape.get_rotated_shape()
-            #     if grid.can_place_shape(rotated):
-            #         grid.place_shape(rotated)
-            #         grid.index_x += rotated.cols()
-            #         grid.index_y += rotated.rows()
-            #         continue
-            #
-            #     flipped: Shape = shape.get_flipped_shape()
-            #     if grid.can_place_shape(flipped):
-            #         grid.place_shape(flipped)
-            #         grid.index_x += flipped.cols()
-            #         grid.index_y += flipped.rows()
-            #         continue
-            #
-            #     return False
+            if target_number_of_cells > total_number_of_cells:
+                return False
 
         print(
-            f"Region size: {total_number_of_cells}, target cells: {target_number_of_cells * 7/9 }"
+            f"Region size: {total_number_of_cells}, target cells: {target_number_of_cells }"
         )
-        return total_number_of_cells <= (target_number_of_cells * 7 / 9)
+
+        return target_number_of_cells * 1.3 <= total_number_of_cells
 
 
 @dataclass
@@ -110,36 +78,6 @@ class ShapeGrid:
         self.grid: list[list[bool]] = [
             [False for _ in range(size_x)] for _ in range(size_y)
         ]
-
-    def can_place_shape(self, shape: Shape) -> bool:
-        """Checks if it can place shape in the grid"""
-
-        for row_index, row in enumerate(shape.grid):
-            for col_index, cell in enumerate(row):
-                if cell:
-                    grid_row = self.index_y + row_index
-                    grid_col = self.index_x + col_index
-
-                    if (
-                        grid_row >= len(self.grid)
-                        or grid_col >= len(self.grid[grid_row])
-                        or self.grid[grid_row][grid_col]
-                    ):
-                        return False
-        return True
-
-    def place_shape(self, shape: Shape):
-        """Places the shape on the grid"""
-
-        for row_index, row in enumerate(shape.grid):
-            for col_index, cell in enumerate(row):
-                if cell:
-                    grid_row = self.index_y + row_index
-                    grid_col = self.index_x + col_index
-
-                    if self.grid[grid_row][grid_col]:
-                        raise ValueError("Cannot place shape here.")
-                    self.grid[grid_row][grid_col] = True
 
 
 @dataclass
@@ -163,6 +101,9 @@ def get_shapes_from_lines(lines: list[str]) -> list[Shape]:
 
     for line in lines:
 
+        if not line.strip():
+            continue
+
         if line.find("x") > 0:
             break
 
@@ -170,6 +111,7 @@ def get_shapes_from_lines(lines: list[str]) -> list[Shape]:
             shape_index += 1
             row_index = 0
             shapes.append(Shape(0, 0))
+            shapes[shape_index].grid = []
             continue
 
         shapes[shape_index].grid.append([])
@@ -188,8 +130,7 @@ def get_regions_from_lines(lines: list[str]) -> list[Region]:
     regions: list[Region] = []
 
     for line in lines:
-        x: int = line.find("x")
-        if x > 0:
+        if "x" in line and ":" in line:
             size, shapes_str = line.split(":")
             size_x_str, size_y_str = size.split("x")
 
