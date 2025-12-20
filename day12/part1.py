@@ -56,37 +56,45 @@ class Region:
     def is_successful(self, shapes: list[Shape]) -> bool:
         """Checks if the region is successful"""
 
-        grid: ShapeGrid = ShapeGrid(self.size_x, self.size_y)
+        total_number_of_cells: int = self.size_x * self.size_y
+        # grid: ShapeGrid = ShapeGrid(self.size_x, self.size_y)
+
+        target_number_of_cells: int = 0
 
         for shape_index, target_quantity in enumerate(self.shape_index_quantaties):
 
             shape: Shape = shapes[shape_index]
 
-            for _ in range(target_quantity):
+            target_number_of_cells += shape.rows() * shape.cols() * target_quantity
 
-                if grid.can_place_shape(shape):
-                    grid.place_shape(shape)
-                    grid.index_x += shape.cols()
-                    grid.index_y += shape.rows()
-                    continue
+            # for _ in range(target_quantity):
+            #
+            #     if grid.can_place_shape(shape):
+            #         grid.place_shape(shape)
+            #         grid.index_x += shape.cols()
+            #         grid.index_y += shape.rows()
+            #         continue
+            #
+            #     rotated: Shape = shape.get_rotated_shape()
+            #     if grid.can_place_shape(rotated):
+            #         grid.place_shape(rotated)
+            #         grid.index_x += rotated.cols()
+            #         grid.index_y += rotated.rows()
+            #         continue
+            #
+            #     flipped: Shape = shape.get_flipped_shape()
+            #     if grid.can_place_shape(flipped):
+            #         grid.place_shape(flipped)
+            #         grid.index_x += flipped.cols()
+            #         grid.index_y += flipped.rows()
+            #         continue
+            #
+            #     return False
 
-                rotated: Shape = shape.get_rotated_shape()
-                if grid.can_place_shape(rotated):
-                    grid.place_shape(rotated)
-                    grid.index_x += rotated.cols()
-                    grid.index_y += rotated.rows()
-                    continue
-
-                flipped: Shape = shape.get_flipped_shape()
-                if grid.can_place_shape(flipped):
-                    grid.place_shape(flipped)
-                    grid.index_x += flipped.cols()
-                    grid.index_y += flipped.rows()
-                    continue
-
-                return False
-
-        return True
+        print(
+            f"Region size: {total_number_of_cells}, target cells: {target_number_of_cells * 7/9 }"
+        )
+        return total_number_of_cells <= (target_number_of_cells * 7 / 9)
 
 
 @dataclass
