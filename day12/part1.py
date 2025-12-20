@@ -7,10 +7,7 @@ from _utils.text_utils import get_lines
 class Shape:
     """A shape"""
 
-    def __init__(self, size_x, size_y):
-        self.grid: list[list[bool]] = [
-            [False for _ in range(size_x)] for _ in range(size_y)
-        ]
+    grid: list[list[bool]]
 
     def rows(self) -> int:
         """Gets the number of rows"""
@@ -44,25 +41,25 @@ class Region:
     def is_successful(self, shapes: list[Shape]) -> bool:
         """Checks if the region is successful"""
 
-        total_number_of_cells: int = self.size_x * self.size_y
-        target_number_of_cells: int = 0
+        total_grid_size: int = self.size_x * self.size_y
+        total_present_size: int = 0
 
         for shape_index, target_quantity in enumerate(self.shape_index_quantaties):
 
             shape: Shape = shapes[shape_index]
 
-            target_number_of_cells += (
-                shape.get_number_of_filled_cells() * target_quantity
-            )
+            if target_quantity > 0:
+                target_size: int = shape.get_number_of_filled_cells() * target_quantity
+                total_present_size += target_size
 
-            if target_number_of_cells > total_number_of_cells:
-                return False
+        if total_present_size > total_grid_size:
+            return False
 
-        print(
-            f"Region size: {total_number_of_cells}, target cells: {target_number_of_cells }"
-        )
+        package_fits: bool = total_present_size * 1.3 < total_grid_size
 
-        return target_number_of_cells * 1.3 <= total_number_of_cells
+        print(f"Grid: {total_grid_size}, Present:{total_present_size}")
+
+        return package_fits
 
 
 @dataclass
@@ -89,8 +86,13 @@ class Presents:
 
     def get_num_successful_regions(self) -> int:
         """Gets the number of successful regions"""
-        return sum(1 for region in self.regions if region.is_successful(self.shapes))
 
+        result: int = 0
+        for region in self.regions:
+            if region.is_successful(self.shapes):
+                result += 1
+
+        return result
 
 def get_shapes_from_lines(lines: list[str]) -> list[Shape]:
     """Gets the shapes from lines"""
@@ -110,8 +112,7 @@ def get_shapes_from_lines(lines: list[str]) -> list[Shape]:
         if line.find(":") > 0:
             shape_index += 1
             row_index = 0
-            shapes.append(Shape(0, 0))
-            shapes[shape_index].grid = []
+            shapes.append(Shape(grid=[]))
             continue
 
         shapes[shape_index].grid.append([])
@@ -148,10 +149,16 @@ def get_regions_from_lines(lines: list[str]) -> list[Region]:
 def get_presents_from_lines(lines: list[str]) -> Presents:
     """Gets the presents from lines"""
 
-    return Presents(
-        shapes=get_shapes_from_lines(lines), regions=get_regions_from_lines(lines)
-    )
+    shapes = get_shapes_from_lines(lines)
+    regions = get_regions_from_lines(lines)
 
+    print("init data")
+    print(shapes)
+    print(regions[0])
+    print(regions[len(regions) - 1])
+    print("end init data")
+
+    return Presents(shapes=shapes, regions=regions)
 
 def get_result_part_1(data: str) -> int:
     """Gets the result"""
