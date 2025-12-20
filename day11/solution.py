@@ -15,4 +15,6 @@ def main():
 
 
 if __name__ == "__main__":
+    # result 1 :670
+    # result 2 :332052564714990
     main()
