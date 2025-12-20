@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import cache
 
 from _utils.text_utils import get_lines
 
@@ -9,14 +10,6 @@ class Device:
 
     name: str
     children: list[str]
-
-
-@dataclass
-class DeviceItem:
-    """A device item"""
-
-    name: str
-    children: list["DeviceItem"]
 
 
 def get_devices(lines: list[str]) -> dict[str, Device]:
@@ -31,51 +24,32 @@ def get_devices(lines: list[str]) -> dict[str, Device]:
     return devices
 
 
-def get_device_item(parent_name: str, devices: dict[str, Device]) -> DeviceItem:
-    """Gets the device item"""
-
-    cache: dict[str, DeviceItem] = {}
-    stack: list[str] = [parent_name]
-
-    # Poplulate items without children
-    while stack:
-        current_name = stack.pop()
-        if current_name in cache:
-            continue
-
-        cache[current_name] = DeviceItem(name=current_name, children=[])
-        stack.extend(devices.get(current_name, Device("", [])).children)
-
-    # Popluate children
-    for name, item in cache.items():
-        device: Device | None = devices.get(name)
-        if device:
-            item.children = [
-                cache[cache_name]
-                for cache_name in device.children
-                if cache_name in cache
-            ]
-
-    return cache[parent_name]
-
-
 def get_result_part_2(data: str) -> int:
     """Gets the result"""
 
     lines: list[str] = get_lines(data)
     devices: dict[str, Device] = get_devices(lines)
 
-    # dac = get_device_item("dac", devices)
-    # fft = get_device_item("fft", devices)
+    # Find all of the paths that lead from svr to out. How many of those paths visit both dac and fft?
+    @cache
+    def get_total_routes_to_out(
+        device_name: str, seen_dac: bool, seen_fft: bool
+    ) -> int:
+        """Gets the total routes to out from a device"""
+        if device_name == "out":
+            return 1 if seen_dac and seen_fft else 0
+        device: Device = devices[device_name]
+        if len(device.children) == 0:
+            return 0
 
-    svr = get_device_item("svr", devices)
-    # How many of those paths visit both 'dac' and 'fft'?
+        if device_name == "dac":
+            seen_dac = True
+        if device_name == "fft":
+            seen_fft = True
 
-    # 1. Find all paths from 'dac' to 'out'.
-    # 2. Find all paths from 'fft' to 'out'.
-    # 3. Find all paths from 'dac' to 'svr'.
-    # 4. Find all paths from 'fft' to 'svr'.
-    # 5. Combine the paths.
-    # 6. Count unique paths.
+        return sum(
+            (get_total_routes_to_out(child_name, seen_dac, seen_fft))
+            for child_name in device.children
+        )
 
-    return len(svr.children)  # Placeholder return value
+    return get_total_routes_to_out("svr", False, False)

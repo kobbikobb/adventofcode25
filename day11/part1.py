@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import cache
 
 from _utils.text_utils import get_lines
 
@@ -23,23 +24,23 @@ def get_devices(lines: list[str]) -> dict[str, Device]:
     return devices
 
 
-def get_total_routes_to_out(device_name: str, devices: dict[str, Device]) -> int:
-    """Gets the total routes to out from a device"""
-    if device_name == "out":
-        return 1
-    device: Device = devices[device_name]
-    if len(device.children) == 0:
-        return 0
-
-    return sum(
-        (get_total_routes_to_out(child_name, devices)) for child_name in device.children
-    )
-
-
 def get_result_part_1(data: str) -> int:
     """Gets the result"""
 
     lines: list[str] = get_lines(data)
     devices: dict[str, Device] = get_devices(lines)
 
-    return get_total_routes_to_out("you", devices)
+    @cache
+    def get_total_routes_to_out(device_name: str) -> int:
+        """Gets the total routes to out from a device"""
+        if device_name == "out":
+            return 1
+        device: Device = devices[device_name]
+        if len(device.children) == 0:
+            return 0
+
+        return sum(
+            (get_total_routes_to_out(child_name)) for child_name in device.children
+        )
+
+    return get_total_routes_to_out("you")
