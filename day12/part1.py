@@ -52,14 +52,7 @@ class Region:
                 target_size: int = shape.get_number_of_filled_cells() * target_quantity
                 total_present_size += target_size
 
-        if total_present_size > total_grid_size:
-            return False
-
-        package_fits: bool = total_present_size * 1.3 < total_grid_size
-
-        print(f"Grid: {total_grid_size}, Present:{total_present_size}")
-
-        return package_fits
+        return total_present_size * 1.3 < total_grid_size
 
 
 @dataclass
@@ -93,6 +86,7 @@ class Presents:
                 result += 1
 
         return result
+
 
 def get_shapes_from_lines(lines: list[str]) -> list[Shape]:
     """Gets the shapes from lines"""
@@ -152,13 +146,8 @@ def get_presents_from_lines(lines: list[str]) -> Presents:
     shapes = get_shapes_from_lines(lines)
     regions = get_regions_from_lines(lines)
 
-    print("init data")
-    print(shapes)
-    print(regions[0])
-    print(regions[len(regions) - 1])
-    print("end init data")
-
     return Presents(shapes=shapes, regions=regions)
+
 
 def get_result_part_1(data: str) -> int:
     """Gets the result"""
